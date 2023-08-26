@@ -5,11 +5,15 @@ import std.meta : Alias;
 import opcode;
 import stdlib;
 
+///
 struct TreeVec2 {
+  ///
   Tree x, y;
 }
 
+///
 struct TreeVec3 {
+  ///
   Tree x, y, z;
 }
 ///
@@ -80,7 +84,8 @@ class Tree {
   static Tree Z() {
     return new Tree(libfive_tree_z());
   }
-  
+
+  ///
   static Tree one() {
     return new Tree(1);
   }
