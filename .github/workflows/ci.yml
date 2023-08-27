@@ -21,6 +21,8 @@ jobs:
       run: sudo apt-get install --quiet -y libboost-all-dev libeigen3-dev
     - name: Lint
       run: dub lint
+    - name: Clone subprojects
+      run: git submodule update --init --recursive
     - name: Cache libfive binaries
       uses: actions/cache@v3
       env:
