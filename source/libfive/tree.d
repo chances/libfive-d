@@ -129,9 +129,10 @@ class Tree {
 
   /// Returns a tree with all remap operations expanded.
   Tree flatten() inout {
-    assert(0, "Unimplemented!");
+    // FIXME: This may not be correct
+    return this.optimized;
   }
-  
+
   /// Returns a new tree which has been optimized!
   ///
   /// Remarks:
@@ -142,13 +143,28 @@ class Tree {
   ///
   /// If the input tree contained remap operations, it will be flattened before optimization.
   Tree optimized() inout {
-    auto tree = libfive_tree_optimized(castFrom!(inout NativeTree).to!NativeTree(this.ptr));
+    auto tree = libfive_tree_optimized(cast(NativeTree) this.ptr);
     if (tree is null) return null;
     return new Tree(tree);
   }
 
   /// Counts the number of unique nodes in the tree.
   size_t size() const {
+    assert(0, "Unimplemented!");
+  }
+
+  /// Remaps the coordinates of this tree, returning a new tree.
+  /// Remarks: This is a constant-time lazy operation that is expanded during a call to `Tree.flatten` or `Tree.optimized`.
+  Tree remap(Tree x, Tree y, Tree z) const {
+    auto tree = libfive_tree_remap(cast(NativeTree) this.ptr, x.ptr, y.ptr, z.ptr);
+    if (tree is null) return null;
+    return new Tree(tree);
+  }
+
+  /// Substitutes a variable within a tree.
+  /// Remarks: This is a constant-time lazy operation that is expanded during a call to `Tree.flatten` or `Tree.optimized`.
+  /// Throws: var must be a tree returned from Tree::var(); otherwise, an `ApplyException` will be thrown.
+  Tree apply(Tree var, Tree value) const {
     assert(0, "Unimplemented!");
   }
 
@@ -162,10 +178,12 @@ class Tree {
     return this.toHash == other.toHash;
   }
 
-  Tree opUnary(string op)() const if (op == "+" || op == "-") {
-    return Tree.unary(op.opcode, this);
+  ///
+  Tree opUnary(string op : "-")() const {
+    return Tree.unary("min".opcode, this);
   }
   
+  ///
   Tree opBinary(string op)(const double rhs) const {
     switch (op) {
       case "+": return Tree.binary("add".opcode, this, new Tree(rhs));
@@ -176,6 +194,7 @@ class Tree {
     }
   }
 
+  ///
   Tree opBinary(string op)(const Tree rhs) const {
     switch (op) {
       case "+": return Tree.binary("add".opcode, this, rhs);
@@ -204,16 +223,21 @@ unittest {
   assert(a - b);
   assert(a * b);
   assert(a / b);
-
-  // Variables
-  assert(Tree.var().isVar);
-
-  const tree = new Tree(2);
-  assert(tree !is null);
-  assert(!tree.isVar);
+  
+  // Remapping
+  auto x = Tree.X();
+  assert(x.remap(Tree.Y(), Tree.X(), Tree.X()).optimized == Tree.Y());
 }
 
 /// Returns: `true` if the given tree is a free variable
 bool isVar(const Tree tree) {
   return libfive_tree_is_var(cast(NativeTree) tree.ptr);
+}
+
+unittest {
+  assert(Tree.var().isVar);
+
+  const tree = new Tree(2);
+  assert(tree);
+  assert(!tree.isVar);
 }
