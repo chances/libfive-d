@@ -23,7 +23,6 @@ all: libfive
 libfive: $(LIBFIVE_ARTIFACTS)
 .PHONY: libfive
 subprojects/libfive:
-subprojects/libfive/libfive/include/libfive.h:
 	git submodule update --init --recursive
 
 $(LIBFIVE_ARTIFACTS): subprojects/libfive.Makefile subprojects/libfive
