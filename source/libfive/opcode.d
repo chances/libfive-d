@@ -1,5 +1,7 @@
 /// License: MPL-2.0
 /// See_Also: <a href="https://github.com/libfive/libfive/blob/master/libfive/include/libfive/tree/opcode.hpp">libfive/include/libfive/tree/opcode.hpp</a>
+module libfive.opcode;
+
 import stdlib;
 
 ///

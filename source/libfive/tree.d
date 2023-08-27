@@ -1,8 +1,10 @@
 /// License: MPL-2.0
 /// See_Also: <a href="https://github.com/libfive/libfive/blob/master/libfive/include/libfive/tree/tree.hpp">libfive/include/libfive/tree/tree.hpp</a>
+module libfive.tree;
+
 import std.meta : Alias;
 
-import opcode;
+import libfive.opcode;
 import stdlib;
 
 ///

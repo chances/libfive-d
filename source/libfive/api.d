@@ -1,9 +1,9 @@
-/// 
-/// Remarks: Modeled library after libfive's C++ standard library.
 /// License: MPL-2.0
 /// See_Also: <a href="https://github.com/libfive/libfive/blob/master/libfive/stdlib/stdlib_impl.hpp">libfive/stdlib/stdlib_impl.hpp</a>
-import stdlib;
-import tree;
+module libfive.api;
+
+import libfive.stdlib;
+import libfive.tree;
 
 /// A range used in interval arithmetic.
 ///
