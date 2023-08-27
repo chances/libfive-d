@@ -32,6 +32,11 @@
     {
       "name": "unittest",
       "dflags": [],
+      "postBuildCommands-linux": [
+        "chrpath --help",
+        "which patchelf",
+        "chrpath -add_rpath @executable_path bin/libfive-test-unittest"
+      ],
       "postBuildCommands-osx": ["install_name_tool -add_rpath @executable_path bin/libfive-test-unittest"]
     }
   ]
