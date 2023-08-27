@@ -26,7 +26,7 @@
     {
       "name": "library",
       "copyFiles-osx": ["$LIBFIVE_PACKAGE_DIR/bin/libfive.dylib"],
-      "copyFiles-posix": ["$LIBFIVE_PACKAGE_DIR/bin/libfive.so"],
+      "copyFiles-linux": ["$LIBFIVE_PACKAGE_DIR/bin/libfive.so"],
       "copyFiles-windows": ["$LIBFIVE_PACKAGE_DIR/bin/libfive.dll"]
     },
     {
