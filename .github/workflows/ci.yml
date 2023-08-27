@@ -23,8 +23,11 @@ jobs:
       run: dub lint
     - name: Cache libfive binaries
       uses: actions/cache@v3
+      env:
+        cache-name: cache-libfive-binaries
       with:
         path: subprojects/libfive/build
+        key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/subprojects/libfive/CMakeLists.txt') }}
     - name: Test
       run: make libfive && dub test --coverage
     # - name: Integration Test
