@@ -147,6 +147,17 @@ class Tree {
     if (tree is null) return null;
     return new Tree(tree);
   }
+  
+  /// If this tree is a constant value, returns that value.
+  /// Throws: `libfive.data.ValueException` When this tree is not a constant value.
+  float value() const {
+    import libfive.data : ValueException;
+
+    bool success;
+    auto result = libfive_tree_get_const(cast(NativeTree) this.ptr, &success);
+    if (!success) throw new ValueException("Accessed value of non-constant Tree");
+    return result;
+  }
 
   /// Counts the number of unique nodes in the tree.
   size_t size() const {
@@ -223,10 +234,19 @@ unittest {
   assert(a - b);
   assert(a * b);
   assert(a / b);
-  
+
   // Remapping
   auto x = Tree.X();
   assert(x.remap(Tree.Y(), Tree.X(), Tree.X()).optimized == Tree.Y());
+
+  // Remapping to a constant
+  auto t = x.remap(new Tree(12), Tree.X(), Tree.X()).flatten();
+  assert(t.value == 12);
+
+  // Collapsing while remapping
+  x = Tree.X() + 5;
+  t = x.remap(new Tree(3), Tree.X(), Tree.X()).flatten();
+  assert(t.value == 8);
 }
 
 /// Returns: `true` if the given tree is a free variable
