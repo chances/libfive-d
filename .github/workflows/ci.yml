@@ -24,7 +24,7 @@ jobs:
     # - name: Integration Test
     #   run: make headless
     - name: Test
-      run: dub test --coverage
+      run: make libfive && dub test --coverage
     - name: Upload Coverage to Codecov
       if: success()
       run: bash <(curl -s https://codecov.io/bash)
