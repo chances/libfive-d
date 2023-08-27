@@ -10,3 +10,8 @@ class ValueException : Exception {
   mixin basicExceptionCtors;
 }
 
+/// Thrown when `Tree.apply` is given a tree that is a free variable.
+class ApplyException : Exception {
+  ///
+  mixin basicExceptionCtors;
+}

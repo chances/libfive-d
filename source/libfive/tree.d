@@ -174,8 +174,12 @@ class Tree {
 
   /// Substitutes a variable within a tree.
   /// Remarks: This is a constant-time lazy operation that is expanded during a call to `Tree.flatten` or `Tree.optimized`.
-  /// Throws: var must be a tree returned from Tree::var(); otherwise, an `ApplyException` will be thrown.
+  /// Throws: `libfive.data.ApplyException` if `var` is not a tree from `Tree.var`
   Tree apply(Tree var, Tree value) const {
+    import libfive.data : ApplyException;
+    if (!var.isVar) throw new ApplyException("Can only apply with a variable as first argument");
+
+    assert(value);
     assert(0, "Unimplemented!");
   }
 
