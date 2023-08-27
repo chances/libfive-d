@@ -219,6 +219,17 @@ class Tree {
       default: return Tree.binary(Opcode.invalid, this, rhs);
     }
   }
+
+  // TODO: Use this to serialize trees
+  override string toString() const @trusted {
+    import std.string: fromStringz;
+
+    auto ptr = libfive_tree_print(cast(NativeTree) this.ptr);
+    assert(ptr);
+    auto result = ptr.fromStringz.to!string.idup;
+    libfive_free_str(ptr);
+    return result;
+  }
 }
 
 unittest {
@@ -251,6 +262,9 @@ unittest {
   x = Tree.X() + 5;
   t = x.remap(new Tree(3), Tree.X(), Tree.X()).flatten();
   assert(t.value == 8);
+  
+  import std.algorithm : equal;
+  assert(x.remap(new Tree(3), Tree.X(), Tree.X()).toString.equal("(remap (+ x 5) 3 x x)"));
 }
 
 /// Returns: `true` if the given tree is a free variable
