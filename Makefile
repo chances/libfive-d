@@ -32,6 +32,8 @@ $(LIBFIVE_ARTIFACTS): subprojects/libfive.Makefile subprojects/libfive
 ifeq (${OS},Darwin)
 	# TODO: Add checks for ARM mac OS artifacts
 	@cp subprojects/libfive/build/libfive/src/libfive.dylib bin
+else ifeq (${OS},Linux)
+	@cp subprojects/libfive/build/libfive/src/libfive.so bin
 else
 	# TODO: Dynamically build OS DLL
 	$(error Unsupported target platform: $OS)
