@@ -43,6 +43,7 @@ alias NativeTree = libfive_tree_*;
 ///
 /// See_Also: <a href="https://github.com/libfive/libfive/blob/master/libfive/include/libfive/tree/tree.hpp">libfive/include/libfive/tree/tree.hpp</a>
 class Tree {
+  import libfive.opcode;
   import std.conv : castFrom, to;
 
   /// Unique identifier for the underlying clause. This is not automatically deduplicated, so the same logic trees may
@@ -112,16 +113,16 @@ class Tree {
   
   /// Constructs a tree with the given one-argument opcode.
   /// Returns: `null` if the opcode or argument is invalid.
-  static Tree unary(Opcode op, Tree a) {
-    auto tree = libfive_tree_unary(op.to!int, a.ptr);
+  static Tree unary(Opcode op, const Tree a) {
+    auto tree = libfive_tree_unary(op.to!int, cast(NativeTree) a.ptr);
     if (tree is null) return null;
     return new Tree(tree);
   }
 
   /// Constructs a tree with the given two-argument opcode.
   /// Returns: `null` if the opcode or arguments are invalid.
-  static Tree binary(Opcode op, Tree lhs, Tree rhs) {
-    auto tree = libfive_tree_binary(op.to!int, lhs.ptr, rhs.ptr);
+  static Tree binary(Opcode op, const Tree lhs, const Tree rhs) {
+    auto tree = libfive_tree_binary(op.to!int, cast(NativeTree) lhs.ptr, cast(NativeTree) rhs.ptr);
     if (tree is null) return null;
     return new Tree(tree);
   }
@@ -160,9 +161,51 @@ class Tree {
   bool opEquals(R)(const R other) const {
     return this.toHash == other.toHash;
   }
+
+  Tree opUnary(string op)() const if (op == "+" || op == "-") {
+    return Tree.unary(op.opcode, this);
+  }
+  
+  Tree opBinary(string op)(const double rhs) const {
+    switch (op) {
+      case "+": return Tree.binary("add".opcode, this, new Tree(rhs));
+      case "-": return Tree.binary("sub".opcode, this, new Tree(rhs));
+      case "*": return Tree.binary("mul".opcode, this, new Tree(rhs));
+      case "/": return Tree.binary("div".opcode, this, new Tree(rhs));
+      default: return Tree.binary(Opcode.invalid, this, new Tree(rhs));
+    }
+  }
+
+  Tree opBinary(string op)(const Tree rhs) const {
+    switch (op) {
+      case "+": return Tree.binary("add".opcode, this, rhs);
+      case "-": return Tree.binary("sub".opcode, this, rhs);
+      case "*": return Tree.binary("mul".opcode, this, rhs);
+      case "/": return Tree.binary("div".opcode, this, rhs);
+      default: return Tree.binary(Opcode.invalid, this, rhs);
+    }
+  }
 }
 
 unittest {
+  // Singletons
+  assert(Tree.X() == Tree.X());
+  
+  // Operations and stuff
+  // Using vars because they're unique
+  const a = Tree.var();
+  const b = Tree.var();
+  assert(a != b);
+  assert(a + 1);
+  assert(a - 1);
+  assert(a * 1);
+  assert(a / 1);
+  assert(a + b);
+  assert(a - b);
+  assert(a * b);
+  assert(a / b);
+
+  // Variables
   assert(Tree.var().isVar);
 
   const tree = new Tree(2);
