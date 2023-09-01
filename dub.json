@@ -16,9 +16,10 @@
     "-P-Isubprojects/libfive/libfive/include",
     "-P-Isubprojects/libfive/libfive/stdlib"
   ],
-  "libs": ["five"],
-  "lflags-osx": ["-L$LIBFIVE_PACKAGE_DIR/bin"],
+  "libs-posix": ["five"],
+  "libs-windows": ["libfive"],
   "lflags-posix": ["-L$LIBFIVE_PACKAGE_DIR/bin"],
+  "lflags-windows": ["/LIBPATH:$LIBFIVE_PACKAGE_DIR/subprojects/libfive/build/libfive/src"],
   "toolchainRequirements": {
     "frontend": ">=2.102"
   },
