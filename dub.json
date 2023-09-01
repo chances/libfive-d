@@ -32,6 +32,9 @@
     {
       "name": "unittest",
       "dflags": [],
+      "preBuildCommands-windows": [
+        "make libfive"
+      ],
       "postBuildCommands-linux": [
         "which patchelf",
         "patchelf --set-rpath '$$ORIGIN/.' bin/libfive-test-unittest"
