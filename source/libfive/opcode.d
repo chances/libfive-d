@@ -2,13 +2,13 @@
 /// See_Also: <a href="https://github.com/libfive/libfive/blob/master/libfive/include/libfive/tree/opcode.hpp">libfive/include/libfive/tree/opcode.hpp</a>
 module libfive.opcode;
 
-import stdlib;
+import libfive.stdlib;
 
 ///
 enum Opcode : int {
   ///
   invalid = 0,
- 
+
   ///
   constant = 1,
   ///
@@ -21,7 +21,7 @@ enum Opcode : int {
   var_free = 5,
   ///
   const_var = 6,
- 
+
   ///
   op_square = 7,
   ///
@@ -48,7 +48,7 @@ enum Opcode : int {
   op_log = 30,
   ///
   op_recip = 29,
- 
+
   ///
   op_add = 17,
   ///
@@ -73,7 +73,7 @@ enum Opcode : int {
   op_nanfill = 27,
   ///
   op_compare = 31,
- 
+
   ///
   oracle = 32,
 }
