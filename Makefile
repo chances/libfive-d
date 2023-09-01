@@ -44,6 +44,8 @@ ifneq (${OS},Windows)
 else
 	@if not exist bin mkdir bin
 	@xcopy /Y .\\subprojects\\libfive\\build\\libfive\\src\\libfive.dll bin
+	@xcopy /Y .\\subprojects\\libfive\\build\\libfive\\src\\libpng*.dll bin
+	@xcopy /Y .\\subprojects\\libfive\\build\\libfive\\src\\zlib*.dll bin
 endif
 
 # Documentation
