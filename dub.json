@@ -16,9 +16,12 @@
     "-P-Isubprojects/libfive/libfive/include",
     "-P-Isubprojects/libfive/libfive/stdlib"
   ],
-  "libs": ["five"],
-  "lflags-osx": ["-L$LIBFIVE_PACKAGE_DIR/bin"],
+  "libs-posix": ["five"],
+  "libs-windows": ["libfive"],
   "lflags-posix": ["-L$LIBFIVE_PACKAGE_DIR/bin"],
+  "lflags-windows": [
+    "/LIBPATH:$LIBFIVE_PACKAGE_DIR/subprojects/libfive/build/libfive/src"
+  ],
   "toolchainRequirements": {
     "frontend": ">=2.102"
   },
@@ -29,14 +32,18 @@
       "copyFiles-linux": ["$LIBFIVE_PACKAGE_DIR/bin/libfive.so"],
       "copyFiles-windows": ["$LIBFIVE_PACKAGE_DIR/bin/libfive.dll"]
     },
+    { "name": "docs" },
     {
       "name": "unittest",
       "dflags": [],
+      "preBuildCommands-windows": ["make libfive"],
       "postBuildCommands-linux": [
         "which patchelf",
         "patchelf --set-rpath '$$ORIGIN/.' bin/libfive-test-unittest"
       ],
-      "postBuildCommands-osx": ["install_name_tool -add_rpath @executable_path bin/libfive-test-unittest"]
+      "postBuildCommands-osx": [
+        "install_name_tool -add_rpath @executable_path bin/libfive-test-unittest"
+      ]
     }
   ]
 }

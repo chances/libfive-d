@@ -46,6 +46,10 @@ class Tree {
   import libfive.opcode;
   import std.conv : castFrom, to;
 
+  /// This is the managed pointer. It's mutable so that the destructor can swap it out for `null` when flattening out
+  /// destruction of a Tree (to avoid blowing up the stack).
+  package NativeTree ptr = null;
+
   /// Unique identifier for the underlying clause. This is not automatically deduplicated, so the same logic trees may
   /// have different IDs.
   ///
@@ -54,10 +58,6 @@ class Tree {
     import std.exception : assumeWontThrow;
     return assumeWontThrow(libfive_tree_id(cast(NativeTree) this.ptr));
   }
-
-  /// This is the managed pointer. It's mutable so that the destructor can swap it out for `null` when flattening out
-  /// destruction of a Tree (to avoid blowing up the stack).
-  package NativeTree ptr = null;
 
   /// Constructor to build from the raw variant pointer. This is used to build a temporary Tree around a raw pointer
   /// acquired from `release()` in libfive's C API.
@@ -68,13 +68,13 @@ class Tree {
   this(double v) {
     this.ptr = libfive_tree_const(v);
   }
-  
+
   ~this() {
-    libfive_tree_delete(this.ptr);
+    if (ptr !is null) libfive_tree_delete(this.ptr);
   }
 
   /// These are the main constructors used to build Trees.
-  /// 
+  ///
   /// In code `X`, `Y`, and `Z` are singletons, since they're used a lot
   static Tree X() {
     return new Tree(libfive_tree_x());
@@ -110,7 +110,7 @@ class Tree {
     if (tree is null) return null;
     return new Tree(tree);
   }
-  
+
   /// Constructs a tree with the given one-argument opcode.
   /// Returns: `null` if the opcode or argument is invalid.
   static Tree unary(Opcode op, const Tree a) {
@@ -147,7 +147,7 @@ class Tree {
     if (tree is null) return null;
     return new Tree(tree);
   }
-  
+
   /// If this tree is a constant value, returns that value.
   /// Throws: `libfive.data.ValueException` When this tree is not a constant value.
   float value() const {
@@ -197,7 +197,7 @@ class Tree {
   Tree opUnary(string op : "-")() const {
     return Tree.unary("min".opcode, this);
   }
-  
+
   ///
   Tree opBinary(string op)(const double rhs) const {
     switch (op) {
@@ -235,7 +235,7 @@ class Tree {
 unittest {
   // Singletons
   assert(Tree.X() == Tree.X());
-  
+
   // Operations and stuff
   // Using vars because they're unique
   const a = Tree.var();
@@ -262,7 +262,7 @@ unittest {
   x = Tree.X() + 5;
   t = x.remap(new Tree(3), Tree.X(), Tree.X()).flatten();
   assert(t.value == 8);
-  
+
   import std.algorithm : equal;
   assert(x.remap(new Tree(3), Tree.X(), Tree.X()).toString.equal("(remap (+ x 5) 3 x x)"));
 }

@@ -1,23 +1,33 @@
-OS := $(shell uname -s)
-ARCH := $(shell uname -m)
-ifeq ($(OS),Darwin)
-SED := gsed
+ifdef OS
+  OS := Windows
+  ARCH := $(PROCESSOR_ARCHITECTURE)
+  SOURCES := $(wildcard source/libfive/*.d)
 else
-SED := sed
+  OS := $(shell uname -s)
+  ARCH := $(shell uname -m)
+ifeq ($(OS),Darwin)
+  SED := gsed
+else
+  SED := sed
 endif
-SOURCES := $(shell find source -name '*.d')
+  SOURCES := $(shell find source -name '*.d')
+endif
 
 ifeq (${OS},Darwin)
-LIBFIVE_ARTIFACTS += bin/libfive.dylib
+  LIBFIVE_ARTIFACTS += bin/libfive.dylib
 else ifeq (${OS},Linux)
-LIBFIVE_ARTIFACTS += bin/libfive.so
+  LIBFIVE_ARTIFACTS += bin/libfive.so
+else ifeq (${OS},Windows)
+  LIBFIVE_ARTIFACTS += libfive.dll
+else
+  $(error Unsupported target platform: $(OS))
 endif
 
 .DEFAULT_GOAL = all
 
-all: libfive
+all: libfive $(SOURCES)
+# TODO: dub build --root=examples/csg
 	dub build --annotate
-	# TODO: dub build --root=examples/csg
 
 # Subprojects
 libfive: $(LIBFIVE_ARTIFACTS)
@@ -25,23 +35,23 @@ libfive: $(LIBFIVE_ARTIFACTS)
 subprojects/libfive:
 	git submodule update --init --recursive
 
+# TODO: Add checks for mac OS ARM artifacts
 $(LIBFIVE_ARTIFACTS): subprojects/libfive.Makefile subprojects/libfive
+ifneq (${OS},Windows)
 	@make -C subprojects -f libfive.Makefile
 	@mkdir -p bin
-ifeq (${OS},Darwin)
-	# TODO: Add checks for ARM mac OS artifacts
-	@cp subprojects/libfive/build/libfive/src/libfive.dylib bin
-else ifeq (${OS},Linux)
-	@cp subprojects/libfive/build/libfive/src/libfive.so bin
+	@cp subprojects/libfive/build/libfive/src/$(@F) bin
 else
-	# TODO: Dynamically build OS DLL
-	$(error Unsupported target platform: $OS)
+	@if not exist bin mkdir bin
+	@xcopy /Y .\\subprojects\\libfive\\build\\libfive\\src\\libfive.dll bin
+	@xcopy /Y .\\subprojects\\libfive\\build\\libfive\\src\\libpng*.dll bin
+	@xcopy /Y .\\subprojects\\libfive\\build\\libfive\\src\\zlib*.dll bin
 endif
 
 # Documentation
 PACKAGE_VERSION := 0.1.1
 docs/sitemap.xml: $(SOURCES)
-	dub build -b ddox
+	dub build -b ddox -c docs
 	@echo "Performing cosmetic changes..."
 	# Navigation Sidebar
 	@$(SED) -i -e "/<nav id=\"main-nav\">/r views/nav.html" -e "/<nav id=\"main-nav\">/d" `find docs -name '*.html'`
@@ -59,7 +69,7 @@ docs/sitemap.xml: $(SOURCES)
 	@$(SED) -i "s/DUB_VERSION/$(PACKAGE_VERSION)/g" `find docs -name '*.html'`
 	@echo Done
 
-docs: libfive docs/sitemap.xml
+docs: docs/sitemap.xml
 .PHONY: docs
 
 # Cleanup
