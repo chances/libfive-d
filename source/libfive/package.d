@@ -12,6 +12,7 @@ import libfive.stdlib;
 
 public:
 import libfive.data;
+import libfive.mesh;
 import libfive.opcode;
 import libfive.tree;
 
@@ -47,33 +48,6 @@ alias Contours = Contour[];
 alias Contour3 = Vec2[];
 /// A set of 3D contours, consisting of a slice of `Contour3` objects.
 alias Contours3 = Contour3[];
-
-/// An indexed 3D mesh.
-struct Mesh {
-  import std.conv : castFrom;
-
-  /// Opaque pointer to C API-managed mesh.
-  private libfive_mesh* mesh;
-
-  ~this() {
-    libfive_mesh_delete(mesh);
-    mesh = null;
-  }
-
-  ///
-  Vec3[] verts() inout {
-    return castFrom!(inout(Vec3)[]).to!(Vec3[])(mesh.verts[0 .. mesh.vert_count]);
-  }
-  ///
-  Tri[] tris() inout {
-    return castFrom!(inout(Tri)[]).to!(Tri[])(mesh.tris[0 .. mesh.tri_count]);
-  }
-}
-
-///
-size_t triCount(const Mesh m) {
-  return m.tris.length;
-}
 
 /// A bitmap representing occupancy. There are `width` * `height` pixels, in row-major order.
 alias Pixels = libfive_pixels;
