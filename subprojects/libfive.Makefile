@@ -22,6 +22,9 @@ libfive/vcpkg/packages: libfive/vcpkg
 	@libfive/vcpkg/bootstrap-vcpkg.bat
 	@libfive/vcpkg/vcpkg.exe install --triplet x64-windows eigen3 boost-container boost-bimap boost-interval boost-lockfree boost-functional boost-algorithm boost-math libpng
 
+libfive/CMakeLists.txt:
+	@git submodule update --init --recursive
+
 libfive/build/Makefile: libfive/CMakeLists.txt libfive/libfive/CMakeLists.txt libfive/libfive/src/CMakeLists.txt
 ifneq (${OS},Windows)
 	@cmake -B libfive/build libfive -DBUILD_STUDIO_APP=OFF -DBUILD_GUILE_BINDINGS=OFF -DBUILD_PYTHON_BINDINGS=OFF
