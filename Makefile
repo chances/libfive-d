@@ -51,7 +51,7 @@ endif
 # Documentation
 PACKAGE_VERSION := 0.1.1
 docs/sitemap.xml: $(SOURCES)
-	dub build -b ddox
+	dub build -b ddox -c docs
 	@echo "Performing cosmetic changes..."
 	# Navigation Sidebar
 	@$(SED) -i -e "/<nav id=\"main-nav\">/r views/nav.html" -e "/<nav id=\"main-nav\">/d" `find docs -name '*.html'`

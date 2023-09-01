@@ -32,6 +32,7 @@
       "copyFiles-linux": ["$LIBFIVE_PACKAGE_DIR/bin/libfive.so"],
       "copyFiles-windows": ["$LIBFIVE_PACKAGE_DIR/bin/libfive.dll"]
     },
+    { "name": "docs" },
     {
       "name": "unittest",
       "dflags": [],
