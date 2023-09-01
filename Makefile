@@ -69,7 +69,7 @@ docs/sitemap.xml: $(SOURCES)
 	@$(SED) -i "s/DUB_VERSION/$(PACKAGE_VERSION)/g" `find docs -name '*.html'`
 	@echo Done
 
-docs: libfive docs/sitemap.xml
+docs: docs/sitemap.xml
 .PHONY: docs
 
 # Cleanup
