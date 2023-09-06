@@ -2,12 +2,13 @@
 /// See_Also: <a href="https://github.com/libfive/libfive/blob/master/libfive/includelibfive/render/brep/mesh.hpp">libfive/includelibfive/render/brep/mesh.hpp</a>
 module libfive.mesh;
 
+import libfive: Region3;
 import libfive.stdlib;
 import libfive.tree;
 
 /// An indexed 3D mesh.
 struct Mesh {
-  import libfive: Region3, Tri, Vec3;
+  import libfive: Tri, Vec3;
   import std.conv: castFrom;
 
   /// Opaque pointer to C API-managed mesh.
