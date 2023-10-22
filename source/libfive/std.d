@@ -95,6 +95,8 @@ Tree box_exact_centered(TreeVec3 size, TreeVec3 center);
 Tree box_exact(TreeVec3 a, TreeVec3 b);
 /// Rounded box with the given bounds and radius (as a 0-1 fraction).
 Tree rounded_box(TreeVec3, TreeVec3, TreeFloat);
+/// ditto
+alias rounded_cube = rounded_box;
 /// A sphere with the given radius and (optional) center.
 Tree sphere(float radius, Vec3 center = Vec3.init) {
   return sphere(new Tree(radius), center);
