@@ -99,11 +99,7 @@ Tree rounded_box(TreeVec3, TreeVec3, TreeFloat);
 alias rounded_cube = rounded_box;
 /// A sphere with the given radius and (optional) center.
 Tree sphere(float radius, Vec3 center = Vec3.init) {
-  return sphere(new Tree(radius), center);
-}
-/// ditto
-Tree sphere(TreeFloat radius, Vec3 center = Vec3.init) {
-  return sphere(radius, center);
+  return (sphere(new Tree(radius), TreeVec3(new Tree(center.x), new Tree(center.y), new Tree(center.z))));
 }
 /// ditto
 Tree sphere(TreeFloat radius, TreeVec3 center = TreeVec3.zero) {
@@ -139,7 +135,8 @@ Tree array_polar_z(Tree shape, int n, TreeVec2 center = TreeVec2.zero);
 Tree extrude_z(Tree t, TreeFloat zmin, TreeFloat zmax);
 
 unittest {
-  auto s = sphere(0.5);
+  const s = sphere(0.5);
+  assert(s !is null);
 }
 
 /// Section: Transforms

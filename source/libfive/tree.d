@@ -18,6 +18,7 @@ struct TreeVec2 {
   ///
   Tree x, y;
 
+  ///
   static TreeVec2 zero() {
     return TreeVec2(new Tree(0), new Tree(0));
   }
@@ -43,6 +44,7 @@ struct TreeVec3 {
   ///
   Tree x, y, z;
 
+  ///
   static TreeVec3 zero() {
     return TreeVec3(new Tree(0), new Tree(0), new Tree(0));
   }
