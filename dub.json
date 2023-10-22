@@ -4,6 +4,9 @@
   "authors": ["Chance Snow"],
   "copyright": "Copyright © 2023, Chance Snow",
   "license": "MPL-2.0",
+  "toolchainRequirements": {
+    "frontend": ">=2.102"
+  },
   "systemDependencies": "cmake: 1.65 or later, pkg-config, Eigen: 3.3.x, Boost: 1.65 or later",
   "sourcePaths": [
     "source",
@@ -16,27 +19,34 @@
     "-P-Isubprojects/libfive/libfive/include",
     "-P-Isubprojects/libfive/libfive/stdlib"
   ],
-  "libs-posix": ["five"],
-  "libs-windows": ["libfive"],
+  "preBuildCommands": ["make libfive"],
+  "libs-posix": ["five", "five-stdlib"],
+  "libs-windows": ["libfive", "libfive-stdlib"],
   "lflags-posix": ["-L$LIBFIVE_PACKAGE_DIR/bin"],
   "lflags-windows": [
-    "/LIBPATH:$LIBFIVE_PACKAGE_DIR/subprojects/libfive/build/libfive/src"
+    "/LIBPATH:$LIBFIVE_PACKAGE_DIR/subprojects/libfive/build/libfive/src",
+    "/LIBPATH:$LIBFIVE_PACKAGE_DIR/subprojects/libfive/build/libfive/stdlib"
   ],
-  "toolchainRequirements": {
-    "frontend": ">=2.102"
-  },
   "configurations": [
     {
       "name": "library",
-      "copyFiles-osx": ["$LIBFIVE_PACKAGE_DIR/bin/libfive.dylib"],
-      "copyFiles-linux": ["$LIBFIVE_PACKAGE_DIR/bin/libfive.so"],
-      "copyFiles-windows": ["$LIBFIVE_PACKAGE_DIR/bin/libfive.dll"]
+      "copyFiles-osx": [
+        "$LIBFIVE_PACKAGE_DIR/bin/libfive.dylib",
+        "$LIBFIVE_PACKAGE_DIR/bin/libfive-stdlib.dylib"
+      ],
+      "copyFiles-linux": [
+        "$LIBFIVE_PACKAGE_DIR/bin/libfive.so",
+        "$LIBFIVE_PACKAGE_DIR/bin/libfive-stdlib.so"
+      ],
+      "copyFiles-windows": [
+        "$LIBFIVE_PACKAGE_DIR/bin/libfive.dll",
+        "$LIBFIVE_PACKAGE_DIR/bin/libfive-stdlib.dll"
+      ]
     },
     { "name": "docs" },
     {
       "name": "unittest",
       "dflags": [],
-      "preBuildCommands-windows": ["make libfive"],
       "postBuildCommands-linux": [
         "which patchelf",
         "patchelf --set-rpath '$$ORIGIN/.' bin/libfive-test-unittest"

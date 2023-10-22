@@ -30,23 +30,28 @@ all: libfive $(SOURCES)
 	dub build --annotate
 
 # Subprojects
-libfive: $(LIBFIVE_ARTIFACTS)
-.PHONY: libfive
-subprojects/libfive:
-	git submodule update --init --recursive
-
 # TODO: Add checks for mac OS ARM artifacts
-$(LIBFIVE_ARTIFACTS): subprojects/libfive.Makefile subprojects/libfive
-ifneq (${OS},Windows)
+libfive: subprojects/libfive.Makefile subprojects/libfive
 	@make -C subprojects -f libfive.Makefile
+ifneq (${OS},Windows)
 	@mkdir -p bin
-	@cp subprojects/libfive/build/libfive/src/$(@F) bin
-else
+endif
+ifeq (${OS},Darwin)
+	@cp subprojects/libfive/build/libfive/src/libfive.dylib bin
+	@cp subprojects/libfive/build/libfive/stdlib/libfive-stdlib.dylib bin
+else ifeq (${OS},Linux)
+	@cp subprojects/libfive/build/libfive/src/libfive.so bin
+	@cp subprojects/libfive/build/libfive/stdlib/libfive-stdlib.so bin
+else ifeq (${OS},Windows)
 	@if not exist bin mkdir bin
 	@xcopy /Y .\\subprojects\\libfive\\build\\libfive\\src\\libfive.dll bin
 	@xcopy /Y .\\subprojects\\libfive\\build\\libfive\\src\\libpng*.dll bin
 	@xcopy /Y .\\subprojects\\libfive\\build\\libfive\\src\\zlib*.dll bin
+	@xcopy /Y .\\subprojects\\libfive\\build\\libfive\\stdlib\\libfive-stdlib.dll bin
 endif
+.PHONY: libfive
+subprojects/libfive:
+	git submodule update --init --recursive
 
 # Documentation
 PACKAGE_VERSION := 0.1.1

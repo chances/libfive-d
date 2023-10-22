@@ -13,7 +13,7 @@ libfive: libfive/build/Makefile
 ifeq (${OS},Windows)
 libfive: libfive/vcpkg libfive/vcpkg/packages
 endif
-	@make libfive -C libfive/build -j4
+	@make libfive-stdlib -C libfive/build -j4
 .PHONY: libfive
 
 libfive/vcpkg:
