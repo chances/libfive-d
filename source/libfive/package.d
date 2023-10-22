@@ -51,4 +51,3 @@ alias Contours3 = Contour3[];
 
 /// A bitmap representing occupancy. There are `width` * `height` pixels, in row-major order.
 alias Pixels = libfive_pixels;
-

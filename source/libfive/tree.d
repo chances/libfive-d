@@ -7,16 +7,60 @@ import std.meta : Alias;
 import libfive.opcode;
 import stdlib;
 
+/// Section: Tree Abstractions
+/// We accept trees for every argument, even those that would normally be floats, so that we can pass in free variables
+/// to parameterize shapes.
+
 ///
 struct TreeVec2 {
+  import libfive : Vec2;
+
   ///
   Tree x, y;
+
+  static TreeVec2 zero() {
+    return TreeVec2(new Tree(0), new Tree(0));
+  }
+
+  ///
+  TreeVec2 opAssign(float value) {
+    x = new Tree(value);
+    y = new Tree(value);
+    return this;
+  }
+  ///
+  TreeVec2 opAssign(Vec2 value) {
+    x = new Tree(value.x);
+    y = new Tree(value.y);
+    return this;
+  }
 }
 
 ///
 struct TreeVec3 {
+  import libfive : Vec3;
+
   ///
   Tree x, y, z;
+
+  static TreeVec3 zero() {
+    return TreeVec3(new Tree(0), new Tree(0), new Tree(0));
+  }
+
+  ///
+  TreeVec3 opAssign(float value) {
+    x = new Tree(value);
+    y = new Tree(value);
+    z = new Tree(value);
+    return this;
+  }
+  ///
+  TreeVec3 opAssign(Vec3 value) {
+    x = new Tree(value.x);
+    y = new Tree(value.y);
+    z = new Tree(value.z);
+    return this;
+  }
 }
 ///
 alias TreeFloat = Tree;
@@ -48,7 +92,7 @@ class Tree {
 
   /// This is the managed pointer. It's mutable so that the destructor can swap it out for `null` when flattening out
   /// destruction of a Tree (to avoid blowing up the stack).
-  package NativeTree ptr = null;
+  package(libfive) NativeTree ptr = null;
 
   /// Unique identifier for the underlying clause. This is not automatically deduplicated, so the same logic trees may
   /// have different IDs.
@@ -65,7 +109,7 @@ class Tree {
     this.ptr = castFrom!Id.to!NativeTree(raw);
   }
   /// Constructs a constant Tree with a floating-point value.
-  this(double v) {
+  this(float v) {
     this.ptr = libfive_tree_const(v);
   }
 

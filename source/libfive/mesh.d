@@ -41,10 +41,6 @@ struct Mesh {
   }
 }
 
-unittest {
-  auto s = sphere(0.5);
-}
-
 ///
 size_t triCount(const Mesh m) {
   return m.tris.length;
